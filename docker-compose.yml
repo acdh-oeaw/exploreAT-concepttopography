@@ -7,7 +7,7 @@ services:
             MYSQL_ROOT_PASSWORD: password
         restart: always
         image: mysql:5.7
-        hostname: conceptlights_db
+        hostname: concepttopography-mysql
         volumes:
             - ${MYSQL_DUMP}:/docker-entrypoint-initdb.d
         ports:
@@ -17,7 +17,7 @@ services:
 
     elasticsearch: 
         image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.2.4
-        container_name: elasticsearch
+        container_name: concepttopography-elasticsearch
         hostname: elasticsearch
         environment:
             - cluster.name=conceptlights
@@ -50,18 +50,18 @@ services:
             - elasticsearch
         networks:
             - esnet
-        container_name: indexer
+        container_name: concepttopography-indexer
         command: tail -f /dev/null
 
-    conceptlights:
-        image: conceptlights:latest
-        container_name: conceptlights
+    concepttopography:
+        image: concepttopography:latest
+        container_name: concepttopography-web
         build:
             context: .
             dockerfile: Dockerfile
         volumes:
             - .:/app
-        hostname: conceptlights
+        hostname: concepttopography
         ports:
             - "8080:8080"
             - "35729:35729"
@@ -72,7 +72,7 @@ services:
 
     kibana:
         image: docker.elastic.co/kibana/kibana-oss:6.2.4
-        container_name: kibana
+        container_name: concepttopography-kibana
         hostname: kibana
         links:
             - elasticsearch
